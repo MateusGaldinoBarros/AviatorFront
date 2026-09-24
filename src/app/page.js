@@ -1,69 +1,44 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { useState, useRef, useEffect } from "react";
+
+
+
 
 export default function Home() {
+  const ultimoNumeroRef = useRef(0);
+  const [valorExibido, setValorExibido] = useState(0);
+  
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:8080/aviao");
+    ws.onopen = () => {
+    console.log("Conexão WebSocket estabelecida.");
+  }
+  
+
+  ws.onmessage = (event) => {
+    const numero = parseFloat(event.data);
+    ultimoNumeroRef.current = numero;
+    
+
+    const intervaloRender = setInterval(() => {
+      setValorExibido(ultimoNumeroRef.current);
+      console.log("Valor exibido atualizado:", valorExibido);
+    }, 100);
+
+    
+
+    return () => {
+      ws.close();
+      clearInterval(intervaloRender);}
+  }
+  }, []);
+  
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.js</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div>
+      <h1>Valor recebido do WebSocket:</h1>
+      <p>{valorExibido.toFixed(2)+ "x"}</p>
     </div>
   );
 }
+
+//ws://localhost:8080/aviao

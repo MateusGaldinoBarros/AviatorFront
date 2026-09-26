@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-
+import styles from './page.module.css'  
 
 
 
@@ -9,6 +9,7 @@ export default function Home() {
   const [valorExibido, setValorExibido] = useState(0);
   
   useEffect(() => {
+    
     const ws = new WebSocket("ws://localhost:8080/aviao");
     ws.onopen = () => {
     console.log("Conexão WebSocket estabelecida.");
@@ -18,27 +19,26 @@ export default function Home() {
   ws.onmessage = (event) => {
     const numero = parseFloat(event.data);
     ultimoNumeroRef.current = numero;
-    
+  }
 
-    const intervaloRender = setInterval(() => {
+  const intervaloRender = setInterval(() => {
       setValorExibido(ultimoNumeroRef.current);
       console.log("Valor exibido atualizado:", valorExibido);
     }, 100);
 
-    
-
-    return () => {
+  return () => {
       ws.close();
       clearInterval(intervaloRender);}
-  }
+
+
   }, []);
   
   return (
-    <div>
-      <h1>Valor recebido do WebSocket:</h1>
+    <div className={styles.container}>
       <p>{valorExibido.toFixed(2)+ "x"}</p>
     </div>
   );
 }
 
 //ws://localhost:8080/aviao
+//

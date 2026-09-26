@@ -1,0 +1,12 @@
+body {
+    background-color: #000000;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+p {
+    color: #ffffff;
+    font-size: 4rem;
+}
+

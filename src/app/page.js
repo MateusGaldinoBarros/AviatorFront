@@ -7,6 +7,7 @@ import styles from './page.module.css'
 export default function Home() {
   const ultimoNumeroRef = useRef(0);
   const [valorExibido, setValorExibido] = useState(0);
+  const [crash, setCrash] = useState(false);
   
   useEffect(() => {
     
@@ -17,8 +18,16 @@ export default function Home() {
   
 
   ws.onmessage = (event) => {
-    const numero = parseFloat(event.data);
+    const mensagem = JSON.parse(event.data);
+    let numero = 0;
+    if (mensagem.tipo === "numero") {
+      numero = parseFloat(mensagem.valor);
+    }
     ultimoNumeroRef.current = numero;
+    
+    if (mensagem.tipo === "CRASH") {
+      setCrash(true);
+    }
   }
 
   const intervaloRender = setInterval(() => {
@@ -35,7 +44,9 @@ export default function Home() {
   
   return (
     <div className={styles.container}>
-      <p>{valorExibido.toFixed(2)+ "x"}</p>
+      <p className={styles.valorExibido + (crash ? ' ' + styles.valorExibido_crash : '')}>
+        {valorExibido.toFixed(2) + "x"}
+      </p>
     </div>
   );
 }

@@ -18,6 +18,8 @@ export default function Home() {
   
 
   ws.onmessage = (event) => {
+    setCrash(false);
+
     const mensagem = JSON.parse(event.data);
     let numero = 0;
     if (mensagem.tipo === "numero") {

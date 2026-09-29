@@ -8,12 +8,12 @@ export default function Home() {
   const ultimoNumeroRef = useRef(0);
   const [valorExibido, setValorExibido] = useState(0);
   const [crash, setCrash] = useState(false);
+  let numero = 0;
   
   useEffect(() => {
     
     const ws = new WebSocket("ws://localhost:8080/aviao");
     ws.onopen = () => {
-    console.log("Conexão WebSocket estabelecida.");
   }
   
 
@@ -21,12 +21,10 @@ export default function Home() {
     setCrash(false);
 
     const mensagem = JSON.parse(event.data);
-    let numero = 0;
     if (mensagem.tipo === "numero") {
       numero = parseFloat(mensagem.valor);
     }
-    ultimoNumeroRef.current = numero;
-    
+    ultimoNumeroRef.current = numero;     
     if (mensagem.tipo === "CRASH") {
       setCrash(true);
     }
@@ -34,7 +32,6 @@ export default function Home() {
 
   const intervaloRender = setInterval(() => {
       setValorExibido(ultimoNumeroRef.current);
-      console.log("Valor exibido atualizado:", valorExibido);
     }, 100);
 
   return () => {

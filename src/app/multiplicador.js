@@ -21,7 +21,8 @@ export default function Multiplicador() {
     if (mensagem.tipo === "numero") {
       numero = parseFloat(mensagem.valor);
     }
-    ultimoNumeroRef.current = numero;     
+    ultimoNumeroRef.current = numero;
+    console.log("Mensagem recebida:", numero);     
     if (mensagem.tipo === "CRASH") {
       setCrash(true);
     }
